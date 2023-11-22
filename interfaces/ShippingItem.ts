@@ -1,6 +1,4 @@
-
-// Interfaces
-interface ShippingItem {
+export default interface ShippingItem {
   id: string;
   name: string;
   length: number;

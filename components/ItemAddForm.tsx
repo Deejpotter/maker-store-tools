@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect } from "react";
 
-const ItemAddForm = ({ onAddItem }) => {
+export const ItemAddForm = ({ onAddItem }) => {
   const [newItem, setNewItem] = useState({
     name: "",
     length: 0,
@@ -10,7 +10,7 @@ const ItemAddForm = ({ onAddItem }) => {
     weight: 0,
   });
 
-  const handleSubmit = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     onAddItem(newItem);
     setNewItem({ name: "", length: 0, width: 0, height: 0, weight: 0 }); // Reset form

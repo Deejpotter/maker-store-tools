@@ -1,4 +1,4 @@
-export interface ShippingBox {
+export default interface ShippingBox {
   id: string;
   name: string;
   length: number;

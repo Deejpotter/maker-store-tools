@@ -1,13 +1,17 @@
-const ItemSelectAndCalculate = ({ items, onCalculateBox }) => {
+'use client';
+import React, { useState, useEffect } from "react";
+import ShippingItem from "@/interfaces/ShippingItem";
+
+export default function ItemSelectAndCalculate = ({ items, onCalculateBox }: ) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedItems, setSelectedItems] = useState([]);
+  const [selectedItems, setSelectedItems] = useState<ShippingItem[]>([]);
 
   const handleSearchBlur = () => {
     // Logic to filter items based on searchTerm
     // Update a state that holds the search results
   };
 
-  const handleSelectItem = (item) => {
+  const handleSelectItem = (item: ShippingItem) => {
     setSelectedItems([...selectedItems, item]);
   };
 

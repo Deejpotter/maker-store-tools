@@ -1,5 +1,8 @@
-'use client';
+"use client";
 import React, { useState, useEffect } from "react";
+
+import { ShippingItem } from "@/interfaces/ShippingItem";
+import ItemAddForm from "@/components/ItemAddForm";
 
 // Helper function to calculate the volume
 const calculateVolume = ({
@@ -15,26 +18,24 @@ const calculateVolume = ({
 };
 
 const BoxShippingCalculatorPage: React.FC = () => {
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState<ShippingItem[]>([]); // Add type annotation for items
 
   const handleAddItem = (item: ShippingItem) => {
-    // Here you would add the item to your database or JSON file
-    // For now, we'll just add it to the local state
-    setItems([...items, item]);
+    setItems((prevItems) => [...prevItems, item]);
   };
 
-  const handleCalculateBox = (selectedItems) => {
+  const handleCalculateBox = () => {
     // Logic to calculate the required box size
   };
 
   return (
     <div>
       <h1>Box Shipping Calculator</h1>
-      <ItemAddForm onAddItem={handleAddItem} />
       <ItemSelectAndCalculate
         items={items}
         onCalculateBox={handleCalculateBox}
       />
+      <ItemAddForm onAddItem={handleAddItem} />
     </div>
   );
 };
