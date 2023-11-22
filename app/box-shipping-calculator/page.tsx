@@ -1,58 +1,41 @@
 'use client';
-
-import LayoutContainer from "@/components/LayoutContainer";
 import React, { useState, useEffect } from "react";
 
-// Define interfaces
-interface Item {
-  id: string;
-  name: string;
+// Helper function to calculate the volume
+const calculateVolume = ({
+  length,
+  width,
+  height,
+}: {
   length: number;
   width: number;
   height: number;
-  weight: number;
-}
-
-interface BoxDimension {
-  id: string;
-  length: number;
-  width: number;
-  height: number;
-  maxWeight: number;
-}
-
-interface UserSelection {
-  itemId: string;
-  quantity: number;
-}
-
-interface CalculatedBox {
-  boxId: string;
-  items: UserSelection[];
-}
+}): number => {
+  return length * width * height;
+};
 
 const BoxShippingCalculatorPage: React.FC = () => {
-  const [items, setItems] = useState<Item[]>([]);
-  const [boxes, setBoxes] = useState<BoxDimension[]>([]);
-  const [selectedItems, setSelectedItems] = useState<UserSelection[]>([]);
-  const [calculatedBox, setCalculatedBox] = useState<CalculatedBox | null>(
-    null
-  );
+  const [items, setItems] = useState([]);
 
-  useEffect(() => {
-    // Here you would load your items and boxes data
-    // For example:
-    // setItems(itemsData);
-    // setBoxes(boxesData);
-  }, []);
+  const handleAddItem = (item: ShippingItem) => {
+    // Here you would add the item to your database or JSON file
+    // For now, we'll just add it to the local state
+    setItems([...items, item]);
+  };
 
-  // Add your logic for handling user selections and calculating the box size
+  const handleCalculateBox = (selectedItems) => {
+    // Logic to calculate the required box size
+  };
 
   return (
-      <LayoutContainer>
+    <div>
       <h1>Box Shipping Calculator</h1>
-      {/* UI components for selecting items and displaying calculated box */}
-    </LayoutContainer>
+      <ItemAddForm onAddItem={handleAddItem} />
+      <ItemSelectAndCalculate
+        items={items}
+        onCalculateBox={handleCalculateBox}
+      />
+    </div>
   );
 };
 
