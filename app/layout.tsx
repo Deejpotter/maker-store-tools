@@ -1,24 +1,38 @@
-import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-import { ItemProvider } from '../contexts/ItemContext';
-import './globals.css';
+import type { Metadata } from "next";
+import { Nunito } from "next/font/google";
+import "./globals.scss";
 
-const inter = Inter({ subsets: ['latin'] });
+import { ItemProvider } from "../contexts/ItemContext";
+import Navbar from "../components/Navbar";
+import LayoutContainer from "@/components/LayoutContainer";
 
+// Uses next/font to load the Nunito Sans font from Google Fonts.
+const nunito = Nunito({ subsets: ["latin"] });
+
+// The metadata object is built-in to Next.js and is used to provide metadata to the page.
 export const metadata: Metadata = {
-  title: 'Maker Store Calculations',
-  description: 'Calculation tool for CNC components',
+  title: "Maker Store Calculations",
+  description: "Calculation tool for Maker Store stuff.",
 };
 
+// The RootLayout component is the root component that is used to wrap the pages.
+// It takes the children prop which is the child components that will be wrapped by the context provider.
+// The ReactNode type is a type that represents any valid React child element.
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html lang="en">
+      {/* The head element is built-in to Next.js and is used to provide metadata to the page.*/}
+      {/* The ItemProvider component is used to provide the context to the components. */}
       <ItemProvider>
-        <body className={inter.className}>{children}</body>
+        <body className={nunito.className}>
+          {/* Render the Navbar component then render the children components. */}
+          <Navbar />
+          {children}
+        </body>
       </ItemProvider>
     </html>
   );
