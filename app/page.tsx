@@ -31,7 +31,7 @@ export default function Home() {
     <>
       {/* Hero Section: Full-width section to welcome users */}
       <section className="hero-section text-center bg-primary text-white py-5">
-        <h1>Welcome to the Maker Store</h1>
+        <h1>Welcome to Maker Store</h1>
         <p>
           Explore our tools and calculators designed to assist you with your
           maker projects.
