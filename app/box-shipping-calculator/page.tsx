@@ -1,8 +1,9 @@
 "use client";
 import React, { useState, useEffect } from "react";
 
-import { ShippingItem } from "@/interfaces/ShippingItem";
+import ShippingItem from "@/interfaces/ShippingItem";
 import ItemAddForm from "@/components/ItemAddForm";
+import ItemSelectAndCalculate from "@/components/ItemSelectAndCalculate";
 
 // Helper function to calculate the volume
 const calculateVolume = ({

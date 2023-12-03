@@ -24,6 +24,14 @@ export default function Home() {
       bgColorClass: "bg-light",
       textColorClass: "text-dark",
     },
+    {
+      title: "Enclosure Calculator",
+      description: "Calculate the size of an enclosure.",
+      link: "/enclosure-calculator",
+      linkText: "Enclosure Calculator",
+      bgColorClass: "bg-light",
+      textColorClass: "text-dark",
+    },
     // More tiles can be added here
   ];
 

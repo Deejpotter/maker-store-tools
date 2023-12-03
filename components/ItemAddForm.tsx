@@ -1,8 +1,10 @@
 'use client';
+import ShippingItem from "@/interfaces/ShippingItem";
 import React, { useState, useEffect } from "react";
 
-export const ItemAddForm = ({ onAddItem }) => {
-  const [newItem, setNewItem] = useState({
+export default function ItemAddForm({ onAddItem }: { onAddItem: (item: ShippingItem) => void }) {
+  const [newItem, setNewItem] = useState ({
+    id: "",
     name: "",
     length: 0,
     width: 0,
@@ -13,7 +15,7 @@ export const ItemAddForm = ({ onAddItem }) => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     onAddItem(newItem);
-    setNewItem({ name: "", length: 0, width: 0, height: 0, weight: 0 }); // Reset form
+    setNewItem({id: '', name: "", length: 0, width: 0, height: 0, weight: 0 }); // Reset form
   };
 
   return (
