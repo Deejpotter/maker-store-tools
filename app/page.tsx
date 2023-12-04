@@ -32,6 +32,22 @@ export default function Home() {
       bgColorClass: "bg-light",
       textColorClass: "text-dark",
     },
+    {
+      title: "40 Series Extrusion",
+      description: "Calculate 40 Series Extrusion cuts.",
+      link: "/40-series-extrusions",
+      linkText: "40 Series Extrusion",
+      bgColorClass: "bg-light",
+      textColorClass: "text-dark",
+    },
+    {
+      title: "20 Series Extrusion",
+      description: "Calculate 20 Series Extrusion cuts.",
+      link: "/20-series-extrusions",
+      linkText: "20 Series Extrusion",
+      bgColorClass: "bg-light",
+      textColorClass: "text-dark",
+    },
     // More tiles can be added here
   ];
 
