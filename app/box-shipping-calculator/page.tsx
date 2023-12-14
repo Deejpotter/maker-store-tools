@@ -19,7 +19,7 @@ const calculateVolume = ({
 };
 
 const BoxShippingCalculatorPage: React.FC = () => {
-  const [items, setItems] = useState<ShippingItem[]>([]); // Add type annotation for items
+  const [items, setItems] = useState<ShippingItem[]>([]);
 
   const handleAddItem = (item: ShippingItem) => {
     setItems((prevItems) => [...prevItems, item]);

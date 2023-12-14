@@ -66,11 +66,11 @@ const CuttingCalculator = () => {
 			<h2>Cut List and Stock Extrusions</h2>
 			{cutList.map((cutItem, index) => (
 				<div key={index}>
-					<p>Extrusion added to invoice: "LR-2020-S-{cutItem.stockLength}"</p>
+					<p>Extrusion added to invoice: LR-2020-S-{cutItem.stockLength}</p>
 					{cutItem.cuts.map((cut, cutIndex) => (
 						<p key={cutIndex}>
-							Cutting fee: "1 x LR-2020-S-{cutItem.stockLength} cut to 1 x
-							LR-2020-S-{cut}"
+							Cutting fee: 1 x LR-2020-S-{cutItem.stockLength} cut to 1 x
+							LR-2020-S-{cut}
 						</p>
 					))}
 				</div>

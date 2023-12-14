@@ -48,6 +48,14 @@ export default function Home() {
       bgColorClass: "bg-light",
       textColorClass: "text-dark",
     },
+    {
+      title: "CNC Technical AI",
+      description: "An AI chatbot that can answer technical questions.",
+      link: "/cnc-technical-ai",
+      linkText: "CNC Technical AI",
+      bgColorClass: "bg-light",
+      textColorClass: "text-dark",
+    },
     // More tiles can be added here
   ];
 

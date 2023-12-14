@@ -33,9 +33,6 @@ export default function ExtrusionPricingCalculator() {
 
 	useEffect(() => {
 		calculateTotals();
-	}, [extrusions]);
-
-	useEffect(() => {
 		generateSKU();
 	}, [extrusions]);
 
