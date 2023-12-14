@@ -24,13 +24,45 @@ export default function Home() {
       bgColorClass: "bg-light",
       textColorClass: "text-dark",
     },
+    {
+      title: "Enclosure Calculator",
+      description: "Calculate the size of an enclosure.",
+      link: "/enclosure-calculator",
+      linkText: "Enclosure Calculator",
+      bgColorClass: "bg-light",
+      textColorClass: "text-dark",
+    },
+    {
+      title: "40 Series Extrusion",
+      description: "Calculate 40 Series Extrusion cuts.",
+      link: "/40-series-extrusions",
+      linkText: "40 Series Extrusion",
+      bgColorClass: "bg-light",
+      textColorClass: "text-dark",
+    },
+    {
+      title: "20 Series Extrusion",
+      description: "Calculate 20 Series Extrusion cuts.",
+      link: "/20-series-extrusions",
+      linkText: "20 Series Extrusion",
+      bgColorClass: "bg-light",
+      textColorClass: "text-dark",
+    },
+    {
+      title: "CNC Technical AI",
+      description: "An AI chatbot that can answer technical questions.",
+      link: "/cnc-technical-ai",
+      linkText: "CNC Technical AI",
+      bgColorClass: "bg-light",
+      textColorClass: "text-dark",
+    },
     // More tiles can be added here
   ];
 
   return (
     <>
       {/* Hero Section: Full-width section to welcome users */}
-      <section className="hero-section text-center bg-primary text-white py-5">
+      <section className="hero-section text-center bg-dark text-white py-5 ">
         <h1>Welcome to Maker Store</h1>
         <p>
           Explore our tools and calculators designed to assist you with your
