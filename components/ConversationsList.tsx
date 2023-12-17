@@ -1,7 +1,4 @@
-<<<<<<< Updated upstream
 'use client';
-=======
->>>>>>> Stashed changes
 // Import React library and useState hook
 import React, { useState } from 'react';
 
