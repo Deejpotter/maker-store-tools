@@ -1,6 +1,9 @@
 // Import React library
 import React from 'react';
+<<<<<<< Updated upstream
 import '@/styles/ChatMessage.scss';
+=======
+>>>>>>> Stashed changes
 
 // Define the properties that the ChatMessage component will receive
 type ChatMessageProps = {
