@@ -1,6 +1,11 @@
 'use client';
 import ShippingItem from "@/interfaces/ShippingItem";
 import React, { useState, useEffect } from "react";
+import ShippingItem
+
+interface ItemAddFormProps {
+  onAddItem: (item: ShippingItem) => void;
+}
 
 export default function ItemAddForm({ onAddItem }: { onAddItem: (item: ShippingItem) => void }) {
   const [newItem, setNewItem] = useState ({
