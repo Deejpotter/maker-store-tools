@@ -83,6 +83,26 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
 		}
 	};
 
+	// Function to handle reinitialization
+	const handleReinitializeClick = async () => {
+		const apiUrl = process.env.NEXT_PUBLIC_API_URL || "";
+
+		try {
+			const response = await fetch(`${apiUrl}/reinitialize`, {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+			});
+
+			if (response.ok) {
+				alert("QA Collection reinitialized successfully.");
+			} else {
+				alert("Failed to reinitialize QA Collection.");
+			}
+		} catch (error) {
+			console.error("Error reinitializing QA Collection", error);
+		}
+	};
+
 	// The interface is made up of a container with two columns. The left column contains the conversations list and the right column contains the chat area.
 	// The chat area is made up of a chat container which contains the message container and the chat form.
 	// The message container is where the messages are displayed and the chat form is where the user can type and submit a message.
@@ -105,6 +125,17 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
 					id="conversation-list"
 				>
 					<ConversationsList />
+
+					{/* Reinitialize Button */}
+					<div className="mt-3 d-flex justify-content-center">
+						<button
+							type="button"
+							className="btn btn-warning"
+							onClick={handleReinitializeClick}
+						>
+							Reinitialize QA Collection
+						</button>
+					</div>
 				</div>
 
 				{/* Chat area */}
