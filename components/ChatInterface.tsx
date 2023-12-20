@@ -10,6 +10,7 @@ import React, {
 import "@/styles/ChatInterface.scss"; // Import custom CSS
 import ChatMessage from "./ChatMessage"; // Import ChatMessage component
 import ConversationsList from "./ConversationsList"; // Import the new ConversationsList component
+import FileUpload from "./FileUpload";
 
 // The chat interface component receives setShowConversations and showConversations as props
 export type ChatInterfaceProps = {
@@ -22,6 +23,8 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
 	setShowConversations,
 	showConversations,
 }) => {
+	// Get API URL from environment variable. If not set, use an empty string which will try to access the same domain.
+	const apiUrl = process.env.NEXT_PUBLIC_API_URL || "";
 	// State to hold all chat messages
 	const [messages, setMessages] = useState<
 		Array<{ type: "user" | "bot"; content: string }>
@@ -51,9 +54,6 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
 			...prevMessages,
 			{ type: "user", content: `You: ${userInput}` },
 		]);
-
-		// Get API URL from environment variable. If not set, use an empty string which will try to access the same domain.
-		const apiUrl = process.env.NEXT_PUBLIC_API_URL || "";
 
 		// Try to fetch the bot's response and catch any errors.
 		try {
@@ -85,8 +85,6 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
 
 	// Function to handle reinitialization
 	const handleReinitializeClick = async () => {
-		const apiUrl = process.env.NEXT_PUBLIC_API_URL || "";
-
 		try {
 			const response = await fetch(`${apiUrl}/reinitialize`, {
 				method: "POST",
@@ -136,6 +134,9 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
 							Reinitialize QA Collection
 						</button>
 					</div>
+
+					{/* File upload area */}
+					<FileUpload uploadEndpoint={apiUrl + '/upload'} />
 				</div>
 
 				{/* Chat area */}
