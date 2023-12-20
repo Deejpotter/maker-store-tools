@@ -25,8 +25,8 @@ export default function RootLayout({
 }) {
 	return (
 		<html lang="en">
-      {/* The head element is built-in to Next.js and is used to provide metadata to the page.*/}
-      {/* The AuthProvider component is used to provide the authentication context to the components. */}
+			{/* The head element is built-in to Next.js and is used to provide metadata to the page.*/}
+			{/* The AuthProvider component is used to provide the authentication context to the components. */}
 			<AuthProvider>
 				{/* The ItemProvider component is used to provide the item context to the components. */}
 				<ItemProvider>
