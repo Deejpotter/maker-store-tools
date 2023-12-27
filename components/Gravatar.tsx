@@ -1,5 +1,6 @@
 import React from "react";
 import md5 from "md5";
+import Image from "next/image";
 
 interface GravatarProps {
   email: string;
@@ -12,7 +13,7 @@ const Gravatar: React.FC<GravatarProps> = ({ email, size = 32, className }) => {
   const url = `https://www.gravatar.com/avatar/${hash}?d=identicon&s=${size}`;
 
   return (
-    <img
+    <Image
       src={url}
       alt="User Avatar"
       className={className}

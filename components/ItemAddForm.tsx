@@ -1,7 +1,6 @@
 'use client';
 import ShippingItem from "@/interfaces/ShippingItem";
 import React, { useState, useEffect } from "react";
-import ShippingItem
 
 interface ItemAddFormProps {
   onAddItem: (item: ShippingItem) => void;
