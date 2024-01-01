@@ -9,6 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@chatscope/chat-ui-kit-react": "^1.10.1",
+    "@nlux/openai-react": "^0.8.13",
+    "@nlux/react": "^0.8.13",
+    "@nlux/themes": "^0.8.13",
     "@types/netlify-identity-widget": "^1.9.6",
     "bootstrap": "^5.3.2",
     "md5": "^2.3.0",
