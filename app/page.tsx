@@ -75,8 +75,6 @@ export default function Home() {
         {/* TileSection: Displays a collection of tiles based on the tilesData array */}
         <TileSection title="Our Tools" tiles={tilesData} />
       </LayoutContainer>
-
-      {/* Additional sections can be added here for more content */}
     </>
   );
 }
