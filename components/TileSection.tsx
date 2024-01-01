@@ -7,8 +7,12 @@ interface TileSectionProps {
   tiles: TileProps[];
 }
 
-// TileSection is a React Functional Component with a type of TileSectionProps which is the type of the props that will be passed to the component.
-// The props are destructured in the function signature into their individual properties.
+/**
+ * The TileSection component is used to render a section of tiles. The tiles are passed as props to the component then rendered using the map function.
+ * Bootstrap and flexbox are used to render the tiles in a grid.
+ * @param title The title of the section.
+ * @param tiles The tiles to render in the section.
+ */
 const TileSection: React.FC<TileSectionProps> = ({ title, tiles }) => {
   return (
     <section className="py-5">

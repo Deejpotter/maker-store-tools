@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import Auth from "./Auth";
 
 const Navbar = () => {
   const [isNavCollapsed, setIsNavCollapsed] = useState(true);
@@ -16,7 +17,7 @@ const Navbar = () => {
 					<span className="navbar-brand">Maker Store Calculations</span>
 				</Link>
 				{/* Use Bootstrap styles for a button to toggle the navbar on mobile devices. 
-        It uses the isNavCollapsed state to track the collapse state and handleNavCollapse to toggle the collapse state. */}
+        		It uses the isNavCollapsed state to track the collapse state and handleNavCollapse to toggle the collapse state. */}
 				<button
 					className="navbar-toggler"
 					type="button"
@@ -32,20 +33,18 @@ const Navbar = () => {
 				>
 					<ul className="navbar-nav">
 						<li className="nav-item">
-							<Link href="/">
-								<span className="nav-link active" aria-current="page">
-									Home
-								</span>
-							</Link>
-						</li>
-						<li className="nav-item">
-							<Link href="/box-shipping-calculator">
-								<span className="nav-link">Box Shipping Calculator</span>
+							<Link href="/cnc-technical-ai">
+								<span className="nav-link">CNC Technical AI</span>
 							</Link>
 						</li>
 						<li className="nav-item">
 							<Link href="/cnc-calibration-tool">
 								<span className="nav-link">CNC Calibration Tool</span>
+							</Link>
+						</li>
+						<li className="nav-item">
+							<Link href="/box-shipping-calculator">
+								<span className="nav-link">Box Shipping Calculator</span>
 							</Link>
 						</li>
 						<li className="nav-item">
@@ -63,14 +62,10 @@ const Navbar = () => {
 								<span className="nav-link">20 Series Extrusions</span>
 							</Link>
 						</li>
-						<li className="nav-item">
-							<Link href="/cnc-technical-ai">
-								<span className="nav-link">CNC Technical AI</span>
-							</Link>
-						</li>
-						{/* Add more navigation links as needed */}
+						{/* Add more nav-items as needed */}
 					</ul>
-				</div>
+			  </div>
+			  <Auth />
 			</div>
 		</nav>
 	);

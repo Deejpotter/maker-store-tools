@@ -17,6 +17,8 @@ const Gravatar: React.FC<GravatarProps> = ({ email, size = 32, className }) => {
       src={url}
       alt="User Avatar"
       className={className}
+      width={size}
+      height={size}
       style={{ width: size, height: size }}
     />
   );
