@@ -28,9 +28,17 @@ const FileUpload = ({ uploadEndpoint }) => {
 	return (
 		<div
 			{...getRootProps()}
-			style={{ border: "1px dashed #ccc", padding: "20px", cursor: "pointer" }}
+			style={{
+				border: "1px dashed #218838",
+				padding: "1rem",
+				cursor: "pointer",
+			}}
 		>
 			<input {...getInputProps()} />
+			<p>
+				This uploader is for bulk adding QA pairs to the Pinecone DB. Please
+				upload a CSV file.
+			</p>
 			<p>Drag and drop a file here, or click to select a file</p>
 		</div>
 	);

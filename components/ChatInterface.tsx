@@ -13,6 +13,7 @@ import {
 	MessageList,
 	Message,
 	MessageInput,
+	Sidebar,
 } from "@chatscope/chat-ui-kit-react";
 import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
 import "@/styles/ChatInterface.scss";
@@ -96,9 +97,9 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
 	// T
 	return (
 		<MainContainer style={{ height: "90vh" }}>
-			<div id="sidebar" className="d-flex flex-column">
+			<Sidebar position="left">
 				<FileUpload uploadEndpoint={apiUrl + "/upload"} />
-			</div>
+			</Sidebar>
 			<ChatContainer>
 				<MessageList>
 					{messages.map((msg, index) => {
