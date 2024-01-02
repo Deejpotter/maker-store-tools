@@ -1,35 +1,44 @@
-@import '~bootstrap/scss/bootstrap';
-@import '@/styles/ChatInterface.scss';
-@import '@/styles/ChatMessage.scss';
-
-// Darker light mode color scheme
-
-// Primary color: A deep blue, less bright than standard light themes
-$primary: #0056b3; 
-
-// Secondary color: A darker shade of gray
+//Overrides
+$primary: #0056b3;
 $secondary: #6c757d;
-
-// Success color: A more subdued green
 $success: #218838;
-
-// Danger color: A darker, less vivid red
 $danger: #c82333;
-
-// Warning color: A deeper shade of yellow
 $warning: #d39e00;
-
-// Info color: A darker, more muted blue
 $info: #138496;
-
-// Light color: A mid-tone gray, less bright than usual
 $light: #ced4da;
-
-// Dark color: A darker gray for text and elements
 $dark: #343a40;
+
+@import "~bootstrap/scss/bootstrap";
+@import "@/styles/ChatInterface.scss";
+@import "@/styles/ChatMessage.scss";
 
 // Applying the theme colors
 body {
-  background-color: $light;  // A mid-tone gray background
-  color: $dark;              // Darker text for contrast and readability
+	background-color: $danger;
+	color: $dark;
+}
+
+// Styles for navbar dropdown
+.nav-item.dropdown {
+  // Hover effect for dropdown
+  &:hover .dropdown-menu {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Styles for dropdown menu
+.dropdown-menu {
+  transition: all 0.3s ease; // Animation transition
+  opacity: 0;
+  transform: translateY(-20px);
+  display: none; // Initially hidden
+
+  // Ensure it's shown immediately on click without delay
+  &.show {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
