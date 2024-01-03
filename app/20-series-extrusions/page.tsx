@@ -24,64 +24,70 @@ const CuttingCalculator = () => {
 	};
 
 	/**
-	 * Optimizes and calculates the cut list
+	 * Calculates an optimized cut list for 20 Series Extrusions.
+	 *
+	 * This function implements a modified version of the Bin Packing Algorithm. It first sorts the parts
+	 * in descending order based on their lengths to prioritize fitting longer parts first. For each part,
+	 * the algorithm attempts to fit it into the existing stock lengths in the new cut list. If a part fits,
+	 * it is added to that stock length. If not, the algorithm selects the shortest stock length that can
+	 * accommodate the part and adds it to a new stock length in the cut list. This approach aims to
+	 * minimize waste by efficiently utilizing available stock lengths and grouping parts by size.
 	 */
 	const calculateCutList = () => {
-		// Sort parts in decreasing order of length.
-		// This approach helps in fitting longer parts first, potentially reducing waste.
-		const sortedParts = [...parts].sort((a, b) => b.length - a.length);
-
 		let newCutList = [];
 
-		// Iterate over each part in the sorted list
-		for (let part of sortedParts) {
-			// For each part, account for its quantity
+		// Sort parts by length in descending order
+		const sortedParts = [...parts].sort((a, b) => b.length - a.length);
+
+		// Iterate over each part
+		sortedParts.forEach((part) => {
 			for (let i = 0; i < part.quantity; i++) {
 				let fitted = false;
 
-				// Find the shortest stock length that can accommodate the part.
-				// We use Array.find to iterate over the standardStockLengths array and return
-				// the first length that is greater than or equal to the part's length.
+				// Determine the shortest stock length that can accommodate the part
 				const suitableStockLength = standardStockLengths.find(
 					(length) => length >= part.length
 				);
 
-				// Attempt to fit the part in an existing stock length in the newCutList.
-				for (let cut of newCutList) {
-					// Check if the current cut's stock length matches the suitable stock length
-					// and it has enough unused length to accommodate the part.
+				// Try to fit the part in existing stock lengths
+				newCutList.forEach((cut) => {
 					if (
+						!fitted &&
 						cut.stockLength === suitableStockLength &&
 						cut.stockLength - cut.usedLength >= part.length
 					) {
-						// If it fits, increase the used length of the stock
 						cut.usedLength += part.length;
-						// Add the part to the cuts array of this stock length
 						cut.cuts.push({ length: part.length, quantity: 1 });
 						fitted = true;
-						break;
 					}
-				}
+				});
 
-				// If the part did not fit in any existing cuts, create a new cut.
+				// If part did not fit in any existing stock, add to a new stock length
 				if (!fitted) {
-					let newCut = {
-						// Use the suitable stock length for this new cut.
+					newCutList.push({
 						stockLength: suitableStockLength,
-						// The used length is initially the length of the part.
 						usedLength: part.length,
-						// Initialize cuts with this part.
 						cuts: [{ length: part.length, quantity: 1 }],
-					};
-					// Add this new cut to the newCutList.
-					newCutList.push(newCut);
+					});
 				}
 			}
-		}
+		});
 
-		// Update the state with the new calculated cut list.
-		setCutList(newCutList);
+		// Group and summarize cuts by stock length
+		let aggregatedCuts = newCutList.reduce((acc, item) => {
+			let existing = acc.find((cut) => cut.stockLength === item.stockLength);
+			if (existing) {
+				existing.quantity += 1;
+				existing.cuts = [...existing.cuts, ...item.cuts];
+			} else {
+				acc.push({ ...item, quantity: 1 });
+			}
+			return acc;
+		}, []);
+
+		setCutList(aggregatedCuts);
 	};
+
 
 	// Renders the component UI
 	return (
@@ -132,8 +138,8 @@ const CuttingCalculator = () => {
 			{cutList.map((cutItem, index) => (
 				<div key={index}>
 					<p>
-						Extrusion added to invoice: LR-{profile}-{color}-
-						{cutItem.stockLength}
+						Extrusion added to invoice: {cutItem.quantity} x LR-{profile}-
+						{color}-{cutItem.stockLength}
 					</p>
 					{cutItem.cuts.map((cut, cutIndex) => (
 						<p key={cutIndex}>
