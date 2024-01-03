@@ -23,71 +23,87 @@ const CuttingCalculator = () => {
 		setParts(updatedParts);
 	};
 
-	/**
-	 * Calculates an optimized cut list for 20 Series Extrusions.
-	 *
-	 * This function implements a modified version of the Bin Packing Algorithm. It first sorts the parts
-	 * in descending order based on their lengths to prioritize fitting longer parts first. For each part,
-	 * the algorithm attempts to fit it into the existing stock lengths in the new cut list. If a part fits,
-	 * it is added to that stock length. If not, the algorithm selects the shortest stock length that can
-	 * accommodate the part and adds it to a new stock length in the cut list. This approach aims to
-	 * minimize waste by efficiently utilizing available stock lengths and grouping parts by size.
-	 */
-	const calculateCutList = () => {
-		let newCutList = [];
-
+	// Helper Functions
+	const sortParts = (parts) => {
 		// Sort parts by length in descending order
-		const sortedParts = [...parts].sort((a, b) => b.length - a.length);
+		return [...parts].sort((a, b) => b.length - a.length);
+	};
 
-		// Iterate over each part
-		sortedParts.forEach((part) => {
-			for (let i = 0; i < part.quantity; i++) {
-				let fitted = false;
+	const findSuitableStockLength = (partLength, stockLengths) => {
+		// Find the shortest stock length that can accommodate the part
+		return stockLengths.find((length) => length >= partLength);
+	};
 
-				// Determine the shortest stock length that can accommodate the part
-				const suitableStockLength = standardStockLengths.find(
-					(length) => length >= part.length
-				);
-
-				// Try to fit the part in existing stock lengths
-				newCutList.forEach((cut) => {
-					if (
-						!fitted &&
-						cut.stockLength === suitableStockLength &&
-						cut.stockLength - cut.usedLength >= part.length
-					) {
-						cut.usedLength += part.length;
-						cut.cuts.push({ length: part.length, quantity: 1 });
-						fitted = true;
-					}
-				});
-
-				// If part did not fit in any existing stock, add to a new stock length
-				if (!fitted) {
-					newCutList.push({
-						stockLength: suitableStockLength,
-						usedLength: part.length,
-						cuts: [{ length: part.length, quantity: 1 }],
-					});
-				}
+	const fitPartInStock = (part, cutList) => {
+		// Try to fit the part in existing stock lengths
+		return cutList.some((cut) => {
+			if (cut.stockLength - cut.usedLength >= part.length) {
+				cut.usedLength += part.length;
+				cut.cuts.push({ length: part.length, quantity: 1 });
+				return true;
 			}
+			return false;
 		});
+	};
 
+	const addPartToNewStock = (part, suitableStockLength, cutList) => {
+		// Add the part to a new stock length
+		cutList.push({
+			stockLength: suitableStockLength,
+			usedLength: part.length,
+			cuts: [{ length: part.length, quantity: 1 }],
+		});
+	};
+
+	const aggregateSimilarCuts = (cuts) => {
+		// Group similar cuts and sum their quantities
+		return cuts.reduce((acc, cut) => {
+			let existingCut = acc.find((c) => c.length === cut.length);
+			if (existingCut) {
+				existingCut.quantity += cut.quantity;
+			} else {
+				acc.push({ ...cut });
+			}
+			return acc;
+		}, []);
+	};
+
+	const aggregateCuts = (cutList) => {
 		// Group and summarize cuts by stock length
-		let aggregatedCuts = newCutList.reduce((acc, item) => {
+		return cutList.reduce((acc, item) => {
 			let existing = acc.find((cut) => cut.stockLength === item.stockLength);
 			if (existing) {
 				existing.quantity += 1;
-				existing.cuts = [...existing.cuts, ...item.cuts];
+				existing.cuts = aggregateSimilarCuts([...existing.cuts, ...item.cuts]);
 			} else {
+				item.cuts = aggregateSimilarCuts(item.cuts);
 				acc.push({ ...item, quantity: 1 });
 			}
 			return acc;
 		}, []);
-
-		setCutList(aggregatedCuts);
 	};
 
+	// Main calculateCutList function
+	const calculateCutList = () => {
+		let newCutList = [];
+		const sortedParts = sortParts(parts);
+
+		sortedParts.forEach((part) => {
+			for (let i = 0; i < part.quantity; i++) {
+				const suitableStockLength = findSuitableStockLength(
+					part.length,
+					standardStockLengths
+				);
+				const fitted = fitPartInStock(part, newCutList);
+
+				if (!fitted) {
+					addPartToNewStock(part, suitableStockLength, newCutList);
+				}
+			}
+		});
+
+		setCutList(aggregateCuts(newCutList));
+	};
 
 	// Renders the component UI
 	return (
