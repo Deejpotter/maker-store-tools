@@ -1,11 +1,35 @@
 "use client";
 import React, { useState } from "react";
+import { howToCutBoards1D } from "stock-cutting";
+
+// Types
+type GlobalSettings = {
+  defaultKerf: number;
+  defaultCutFee: number;
+  defaultSetupFee: number;
+};
+type StockCut = {
+  stockLength: number;
+  usedLength: number;
+  cuts: Cut[];
+};
+type Cut = {
+  length: number;
+  kerf: number;
+};
+
 
 const CuttingCalculator = () => {
 	const [parts, setParts] = useState([]);
 	const [cutList, setCutList] = useState([]);
 	const [color, setColor] = useState("S"); // Default color silver
 	const [profile, setProfile] = useState("20x20"); // Default profile
+
+	const globalVars = {
+		defaultKerf: 4,
+		defaultCutFee: 2,
+		defaultSetupFee: 3
+	}
 
 	// Standard stock lengths for 20 Series Extrusions
 	const standardStockLengths = [500, 1000, 1500, 3000];
@@ -83,27 +107,41 @@ const CuttingCalculator = () => {
 		}, []);
 	};
 
+	/**
+	 * Processes the output from the stock-cutting library and formats it for display.
+	 * @param output: The output from the stock-cutting library
+	 * @returns The formatted cut list to be displayed
+	 */
+	const processOutput = (output) => {
+		return output.map(item => {
+            const cuts = item.cuts.map(cutSize => ({
+                length: cutSize,
+                kerf: globalVars.defaultKerf
+            }));
+            return {
+                stockLength: item.stock.size,
+                usedLength: item.cuts.reduce((acc, cut) => acc + cut, 0), // or calculate differently if needed
+                cuts: cuts
+            };
+        });
+	}
+
 	// Main calculateCutList function
 	const calculateCutList = () => {
-		let newCutList = [];
-		const sortedParts = sortParts(parts);
+        const formattedParts = parts.map(part => ({ size: part.length, count: part.quantity }));
+		const formattedStockSizes = standardStockLengths.map(length => ({ size: length, cost: 1 })); // Example cost to work with the library
+		const bladeSize = globalVars.defaultKerf;
 
-		sortedParts.forEach((part) => {
-			for (let i = 0; i < part.quantity; i++) {
-				const suitableStockLength = findSuitableStockLength(
-					part.length,
-					standardStockLengths
-				);
-				const fitted = fitPartInStock(part, newCutList);
+        const output = howToCutBoards1D({
+            stockSizes: formattedStockSizes,
+            bladeSize: bladeSize,
+            requiredCuts: formattedParts,
+        });
 
-				if (!fitted) {
-					addPartToNewStock(part, suitableStockLength, newCutList);
-				}
-			}
-		});
-
-		setCutList(aggregateCuts(newCutList));
-	};
+        // Process output and update state
+        const newCutList = processOutput(output);
+        setCutList(newCutList);
+    };
 
 	// Renders the component UI
 	return (
