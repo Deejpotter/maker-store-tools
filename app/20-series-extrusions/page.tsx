@@ -1,23 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import { howToCutBoards1D } from "stock-cutting";
-
-// Types
-type GlobalSettings = {
-  defaultKerf: number;
-  defaultCutFee: number;
-  defaultSetupFee: number;
-};
-type StockCut = {
-  stockLength: number;
-  usedLength: number;
-  cuts: Cut[];
-};
-type Cut = {
-  length: number;
-  kerf: number;
-};
-
 
 const CuttingCalculator = () => {
 	const [parts, setParts] = useState([]);
@@ -39,11 +21,21 @@ const CuttingCalculator = () => {
 		setParts([...parts, { length: 0, quantity: 1 }]);
 	};
 
-	// Updates part requirement details
+	/**
+	 * This function updates a part in the parts array. It should be called
+	 * when a part's length or quantity is changed.
+	 * @param index The index in the array of the part to update.
+	 * @param field The field to update on the part.
+	 * @param value The new value for the field.
+	 */
 	const updatePart = (index, field, value) => {
+		// Update the part in the parts array by creating a new array using the spread operator
+		// to copy the existing parts, and then replacing the part at the specified index with
+		// a new part object that has the updated field.
 		const updatedParts = parts.map((part, i) =>
 			i === index ? { ...part, [field]: parseInt(value, 10) } : part
 		);
+		// Then update the parts array with the new array
 		setParts(updatedParts);
 	};
 
@@ -107,41 +99,27 @@ const CuttingCalculator = () => {
 		}, []);
 	};
 
-	/**
-	 * Processes the output from the stock-cutting library and formats it for display.
-	 * @param output: The output from the stock-cutting library
-	 * @returns The formatted cut list to be displayed
-	 */
-	const processOutput = (output) => {
-		return output.map(item => {
-            const cuts = item.cuts.map(cutSize => ({
-                length: cutSize,
-                kerf: globalVars.defaultKerf
-            }));
-            return {
-                stockLength: item.stock.size,
-                usedLength: item.cuts.reduce((acc, cut) => acc + cut, 0), // or calculate differently if needed
-                cuts: cuts
-            };
-        });
-	}
-
-	// Main calculateCutList function
 	const calculateCutList = () => {
-        const formattedParts = parts.map(part => ({ size: part.length, count: part.quantity }));
-		const formattedStockSizes = standardStockLengths.map(length => ({ size: length, cost: 1 })); // Example cost to work with the library
-		const bladeSize = globalVars.defaultKerf;
+		let newCutList = [];
+		const sortedParts = sortParts(parts);
 
-        const output = howToCutBoards1D({
-            stockSizes: formattedStockSizes,
-            bladeSize: bladeSize,
-            requiredCuts: formattedParts,
-        });
+		sortedParts.forEach((part) => {
+			for (let i = 0; i < part.quantity; i++) {
+				const suitableStockLength = findSuitableStockLength(
+					part.length,
+					standardStockLengths
+				);
+				const fitted = fitPartInStock(part, newCutList);
 
-        // Process output and update state
-        const newCutList = processOutput(output);
-        setCutList(newCutList);
-    };
+				if (!fitted) {
+					addPartToNewStock(part, suitableStockLength, newCutList);
+				}
+			}
+		});
+
+		setCutList(aggregateCuts(newCutList));
+	};
+
 
 	// Renders the component UI
 	return (
@@ -209,3 +187,19 @@ const CuttingCalculator = () => {
 };
 
 export default CuttingCalculator;
+
+// Types
+type GlobalSettings = {
+  defaultKerf: number;
+  defaultCutFee: number;
+  defaultSetupFee: number;
+};
+type StockCut = {
+  stockLength: number;
+  usedLength: number;
+  cuts: Cut[];
+};
+type Cut = {
+  length: number;
+  kerf: number;
+};
