@@ -3,11 +3,16 @@ import React, { useState } from "react";
 import { Cut, StockCut, GlobalVariables } from "./CutListTypes"
 import calculateCutList from "./CutListCalculator";
 
+// Global variables for use in the calculations.
 export const globalVars:GlobalVariables = {
     defaultKerf: 4,
     defaultCutFee: 2,
     defaultSetupFee: 3
 }
+
+// Standard stock lengths for 20 Series Extrusions
+const standardStockLengths = [500, 1000, 1500, 3000];
+
     
 const CuttingCalculator = () => {
 	const [parts, setParts] = useState<Cut[]>([]);
@@ -16,9 +21,6 @@ const CuttingCalculator = () => {
 	const [profile, setProfile] = useState("20x20"); // Default profile
 
 
-	// Standard stock lengths for 20 Series Extrusions
-	const standardStockLengths = [500, 1000, 1500, 3000];
-
 	/**
 	 * Adds a new part requirement to the parts array. Each new part has a default length of 0
 	 * and a quantity of 1.
@@ -26,7 +28,6 @@ const CuttingCalculator = () => {
 	const addPart = () => {
 		setParts([...parts, { length: 0, quantity: 1 }]);
 	};
-
 
 	/**
 	 * This function updates a part in the parts array. It should be called

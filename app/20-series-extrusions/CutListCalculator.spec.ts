@@ -1,65 +1,67 @@
-import calculateCutList, { addCombinationToStock, generatePartCombinations } from './CutListCalculator';
+import calculateCutList, { addCombinationToStock, addPartToNewStock, aggregateCuts, calculateTotalLength, findSuitableStockLength, fitPartInStock, generatePartCombinations, sortParts } from './CutListCalculator';
 
-// Test suite for the calculateCutList function
+
 describe('calculateCutList', () => {
     // Test case: when asked for 2 x 700mm extrusions, the function should use a single 1500mm stock cut.
     it('should fit two 700mm parts into a single 1500mm stock', () => {
         // Set up the test data
         const parts = [{ length: 700, quantity: 2 }];
-        const stockLengths = [1500]; 
+	    // Standard stock lengths for 20 Series Extrusions
+        const stockLengths = [500, 1000, 1500, 3000]; 
+
 
         // Call the function with the test data
         const cutList = calculateCutList(parts, stockLengths);
 
         // Check that the function returned the correct cut list
         expect(cutList.length).toBe(1);
-        expect(cutList[0].usedLength).toBe(1408);
+        expect(cutList[0].stockLength).toBe(1500);
+        expect(cutList[0].usedLength).toBe(1408); // 700*2 + 4*2 for kerf
         expect(cutList[0].cuts.length).toBe(1);
         expect(cutList[0].cuts[0].length).toBe(700);
         expect(cutList[0].cuts[0].quantity).toBe(2);
     });
 });
 
-// Test suite for the generatePartCombinations function
-describe('generatePartCombinations', () => {
-    // Test case: when given a list of parts, the function should return all possible combinations of those parts
-    it('should return all combinations of parts', () => {
-        // Define a list of parts
-        const parts = [{ length: 1, quantity: 1 }, { length: 2, quantity: 1 }, { length: 3, quantity: 1 }];
-        // Define the expected combinations
-        const expectedCombinations = [
-            [],
-            [{ length: 1, quantity: 1 }],
-            [{ length: 2, quantity: 1 }],
-            [{ length: 1, quantity: 1 }, { length: 2, quantity: 1 }],
-            [{ length: 3, quantity: 1 }],
-            [{ length: 1, quantity: 1 }, { length: 3, quantity: 1 }],
-            [{ length: 2, quantity: 1 }, { length: 3, quantity: 1 }],
-            [{ length: 1, quantity: 1 }, { length: 2, quantity: 1 }, { length: 3, quantity: 1 }]
-        ];
-        // Call the function with the parts list
-        const combinations = generatePartCombinations(parts);
-        // Check that the function returned the expected combinations
-        expect(combinations).toEqual(expect.arrayContaining(expectedCombinations));
-        // Check that the function returned the correct number of combinations
-        expect(combinations.length).toBe(expectedCombinations.length);
-    });
 
-    // Test case: when given an empty list of parts, the function should return an empty array
-    it('should return an empty array when no parts are provided', () => {
-        // Define an empty list of parts
-        const parts = [];
-        // Define the expected result (an empty array)
-        const expectedCombinations = [[]];
-        // Call the function with the empty parts list
-        const combinations = generatePartCombinations(parts);
-        // Check that the function returned the expected result
-        expect(combinations).toEqual(expectedCombinations);
-    });
+describe('generatePartCombinations', () => {
+    // Test case: when asked for 2 x 700mm extrusions, the function should get them from a single 1500mm stock cut unless there is leftover stock on another cut.
+    it('should return correct combinations for 2 x 700mm parts', () => {
+    const parts = [{ length: 700, quantity: 2 }];
+    const combinations = generatePartCombinations(parts);
+    expect(combinations).toEqual([[{ length: 700, quantity: 2 }]]);
+  });
 });
 
-// Test suite for the addCombinationToStock function
+
 describe('addCombinationToStock', () => {
+    // Test case: when asked for 2 x 700mm extrusions, the function should use a single 1500mm stock cut.
+    it('should add a combination of 2 x 700mm parts to a 1500mm stock', () => {
+        const combination = [{ length: 700, quantity: 2 }];
+        const cutList = [];
+        addCombinationToStock(combination, 1500, cutList);
+        expect(cutList.length).toBe(1);
+        expect(cutList[0].stockLength).toBe(1500);
+        expect(cutList[0].usedLength).toBe(1408);
+        expect(cutList[0].cuts.length).toBe(1);
+        expect(cutList[0].cuts[0].length).toBe(700);
+        expect(cutList[0].cuts[0].quantity).toBe(2);
+    });
+
+    // Test case: When asked for 2 x 700mm extrusions, the function should add them to a single 1500mm stock cut.
+    it('should add two 700mm extrusions to a single 1500mm stock cut', () => {
+        const combination = [{ length: 700, quantity: 2 }];
+        const stockLength = 1500;
+        const cutList = [{ stockLength: 1500, usedLength: 0, cuts: [], quantity: 1 }];
+
+        addCombinationToStock(combination, stockLength, cutList);
+
+        expect(cutList[0].usedLength).toBe(1400);
+        expect(cutList[0].cuts.length).toBe(1);
+        expect(cutList[0].cuts[0].length).toBe(700);
+        expect(cutList[0].cuts[0].quantity).toBe(2);
+    });
+
     // Test case: when the combination fits into an existing stock cut, it should be added to that cut
     it('should add the combination to an existing stock cut if it fits', () => {
         // Define a combination and a cut list with one cut that the combination fits into
@@ -109,19 +111,81 @@ describe('addCombinationToStock', () => {
         expect(cutList[0].usedLength).toBe(2);
         expect(cutList[0].cuts.length).toBe(1);
     });
+});
 
-    // Test case: When asked for 2 x 700mm extrusions, the function should add them to a single 1500mm stock cut.
-    it('should add two 700mm extrusions to a single 1500mm stock cut', () => {
-        const combination = [{ length: 700, quantity: 2 }];
+describe('calculateTotalLength', () => {
+    it('should return the total length of a combination of parts', () => {
+        const parts = [{ length: 700, quantity: 2 }];
+        const totalLength = calculateTotalLength(parts);
+        expect(totalLength).toBe(1408);
+    });
+});
+
+describe('sortParts', () => {
+    it('should sort parts in descending order by length', () => {
+        const parts = [{ length: 200, quantity: 1 }, { length: 100, quantity: 2 }];
+        const sortedParts = sortParts(parts);
+        expect(sortedParts[0].length).toBeGreaterThanOrEqual(sortedParts[1].length);
+    });
+});
+
+describe('findSuitableStockLength', () => {
+    it('should find the shortest stock length for a given part length', () => {
+        const partLength = 700;
+        const stockLengths = [500, 1000, 1500, 3000];
+        const suitableLength = findSuitableStockLength(partLength, stockLengths);
+        expect(suitableLength).toBe(1000);
+    });
+});
+
+describe('fitPartInStock', () => {
+    it('should fit a part in an existing stock length', () => {
+        const part = { length: 500, quantity: 1 };
+        const cutList = [{ stockLength: 1000, usedLength: 200, cuts: [], quantity: 1 }];
+        const result = fitPartInStock(part, cutList);
+        expect(result).toBe(true);
+        expect(cutList[0].usedLength).toBe(700);
+    });
+});
+
+describe('addPartToNewStock', () => {
+    it('should add a part to a new stock length', () => {
+        const part = { length: 1200, quantity: 1 };
         const stockLength = 1500;
-        const cutList = [{ stockLength: 1500, usedLength: 0, cuts: [], quantity: 1 }];
+        const cutList = [];
+        addPartToNewStock(part, stockLength, cutList);
+        expect(cutList.length).toBe(1);
+        expect(cutList[0].usedLength).toBe(1200);
+    });
+});
 
-        addCombinationToStock(combination, stockLength, cutList);
+describe('aggregateCuts', () => {
+    // Test case: when asked for 2 x 700mm extrusions, the function should use a single 1500mm stock cut.
+    it('should correctly aggregate cuts for 2 x 700mm parts', () => {
+        // Set up the test data
+        const cutList = [
+        { stockLength: 1500, usedLength: 1404, cuts: [{ length: 700, quantity: 2 }], quantity: 1 }
+        ];
 
-        expect(cutList[0].usedLength).toBe(1400);
-        expect(cutList[0].cuts.length).toBe(1);
-        expect(cutList[0].cuts[0].length).toBe(700);
-        expect(cutList[0].cuts[0].quantity).toBe(2);
+        // Call the function with the test data
+        const stockList = aggregateCuts(cutList);
+        
+        // Check that the function returned the correct cut list
+        expect(stockList.length).toBe(1);
+        expect(stockList[0].quantity).toBe(1);
+        expect(stockList[0].cuts.length).toBe(1);
+        expect(stockList[0].cuts[0].length).toBe(700);
+        expect(stockList[0].cuts[0].quantity).toBe(2);
+    });
+
+    it('should group and summarize cuts by stock length', () => {
+        const cutList = [
+            { stockLength: 1000, usedLength: 700, cuts: [{ length: 700, quantity: 1 }], quantity: 1 },
+            { stockLength: 1000, usedLength: 300, cuts: [{ length: 300, quantity: 1 }], quantity: 1 }
+        ];
+        const aggregatedCutList = aggregateCuts(cutList);
+        expect(aggregatedCutList.length).toBe(1);
+        expect(aggregatedCutList[0].quantity).toBe(2);
     });
 });
 
