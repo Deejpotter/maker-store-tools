@@ -140,11 +140,11 @@ describe('findSuitableStockLength', () => {
 
 describe('fitPartInStock', () => {
     it('should fit a part in an existing stock length', () => {
-        const part = { length: 500, quantity: 1 };
-        const cutList = [{ stockLength: 1000, usedLength: 200, cuts: [], quantity: 1 }];
+        const part = { length: 300, quantity: 1 };
+        const cutList = [{ stockLength: 1000, usedLength: 604, cuts: [{ length: 600, quantity: 1 }], quantity: 1 }];
         const result = fitPartInStock(part, cutList);
         expect(result).toBe(true);
-        expect(cutList[0].usedLength).toBe(700);
+        expect(cutList[0].usedLength).toBe(908);
     });
 });
 
@@ -155,7 +155,7 @@ describe('addPartToNewStock', () => {
         const cutList = [];
         addPartToNewStock(part, stockLength, cutList);
         expect(cutList.length).toBe(1);
-        expect(cutList[0].usedLength).toBe(1200);
+        expect(cutList[0].usedLength).toBe(1204);
     });
 });
 
@@ -164,7 +164,8 @@ describe('aggregateCuts', () => {
     it('should correctly aggregate cuts for 2 x 700mm parts', () => {
         // Set up the test data
         const cutList = [
-        { stockLength: 1500, usedLength: 1404, cuts: [{ length: 700, quantity: 2 }], quantity: 1 }
+        { stockLength: 1500, usedLength: 704, cuts: [{ length: 700, quantity: 1 }], quantity: 1 },
+        { stockLength: 1500, usedLength: 704, cuts: [{ length: 700, quantity: 1 }], quantity: 1 }
         ];
 
         // Call the function with the test data
@@ -172,20 +173,29 @@ describe('aggregateCuts', () => {
         
         // Check that the function returned the correct cut list
         expect(stockList.length).toBe(1);
-        expect(stockList[0].quantity).toBe(1);
+        expect(stockList[0].quantity).toBe(2);
         expect(stockList[0].cuts.length).toBe(1);
+        expect(stockList[0].stockLength).toBe(1500);
+        expect(stockList[0].usedLength).toBe(1408);
         expect(stockList[0].cuts[0].length).toBe(700);
         expect(stockList[0].cuts[0].quantity).toBe(2);
     });
 
     it('should group and summarize cuts by stock length', () => {
+        // Set up the test data
         const cutList = [
-            { stockLength: 1000, usedLength: 700, cuts: [{ length: 700, quantity: 1 }], quantity: 1 },
-            { stockLength: 1000, usedLength: 300, cuts: [{ length: 300, quantity: 1 }], quantity: 1 }
+            { stockLength: 1000, usedLength: 604, cuts: [{ length: 600, quantity: 1 }], quantity: 1 },
+            { stockLength: 1000, usedLength: 304, cuts: [{ length: 300, quantity: 1 }], quantity: 1 }
         ];
+
+        // Call the function with the test data
         const aggregatedCutList = aggregateCuts(cutList);
+
+        // Check that the function returned the correct cut list
         expect(aggregatedCutList.length).toBe(1);
         expect(aggregatedCutList[0].quantity).toBe(2);
+        expect(aggregatedCutList[0].usedLength).toBe(908);
+        expect(aggregatedCutList[0].cuts.length).toBe(2);
     });
 });
 

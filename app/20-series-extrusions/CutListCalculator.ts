@@ -11,7 +11,10 @@ import { globalVars } from "./page";
  * @returns {StockCut[]} - An array of StockCut objects representing the optimized cut list.
  */
 const calculateCutList = (parts: Cut[], standardStockLengths: number[]): StockCut[] => {
+    // Initialize the cut list to an empty array.
     let newCutList: StockCut[] = [];
+
+    // Generate all combinations of stock lengths for the given parts.
     const partCombinations = generatePartCombinations(parts);
 
     // Find the shortest stock length that can accommodate the combination of parts.
@@ -37,18 +40,26 @@ export default calculateCutList;
 
 /**
  * Recursively generates all combinations of parts for a given array of parts.
- * Based on the Cutting Stock Problem algorithm
+ * This function is key in optimizing material usage by exploring every possible grouping of parts.
+ * It's particularly useful in scenarios where there are multiple ways to arrange parts on stock lengths.
+ *
+ * Workflow:
+ * 1. If the parts array is empty, return an array with an empty combination.
+ * 2. Take the first part and recursively generate combinations for the rest.
+ * 3. Combine the first part with each of these combinations.
+ * 4. Return all combinations, both with and without the first part.
+ *
+ * Example: For 2 x 700mm parts, this function will find all ways to group these parts, considering the stock lengths available.
+ * 
  * @param {Cut[]} parts - The array of parts to generate combinations from.
  * @returns {Cut[][]} - An array of arrays, each containing a combination of parts.
  */
 export const generatePartCombinations = (parts: Cut[]): Cut[][] => {
     if (parts.length === 0) return [[]];
 
-    // Take the first part in the array and generate all combinations of the remaining parts
     const firstPart = parts[0];
     const rest = parts.slice(1);
 
-    // First, generate all combinations of the remaining parts
     const combinationsWithoutFirst = generatePartCombinations(rest);
     const combinationsWithFirst = combinationsWithoutFirst.map(combination => [firstPart, ...combination]);
 
@@ -56,14 +67,20 @@ export const generatePartCombinations = (parts: Cut[]): Cut[][] => {
 };
 
 /**
- * Calculates the total length of a combination of parts.
+ * Calculates the total length of a combination of parts, including the kerf for each cut.
+ * The kerf is added for all cuts except the last one in the combination.
  * 
  * @param {Cut[]} parts - An array of parts to calculate the total length of.
- * @returns {number} - The total length of the combination of parts.
+ * @returns {number} - The total length of the combination of parts, including kerfs.
  */
 export const calculateTotalLength = (parts: Cut[]): number => {
-    return parts.reduce((total, part) => total + part.length * part.quantity, 0);
+    if (parts.length === 0) return 0;
+    let totalLength = parts.reduce((total, part) => total + part.length * part.quantity, 0);
+    // Add kerf for each cut, except the last one
+    totalLength += globalVars.defaultKerf * (parts.length - 1);
+    return totalLength;
 };
+
 
 /**
  * Finds the shortest stock length from the standard stock lengths that can accommodate
@@ -86,9 +103,8 @@ export const findSuitableStockLength = (partLength: number, stockLengths: number
  * @param {StockCut[]} cutList - The current list of stock cuts.
  */
 export const addCombinationToStock = (combination: Cut[], InputStockLength: number, cutList: StockCut[]): void => {
-    // Calculate the total length of the combination, accounting for the blade kerf.
-    // Reduce takes each item in an array and combines them into a single value. In this case, it sums the lengths of all the cuts in the combination.
-    const totalLength = combination.reduce((sum, cut) => sum + cut.length * cut.quantity, 0) + globalVars.defaultKerf * (combination.length - 1);
+    // Calculate the total length of the combination.
+    const totalLength = calculateTotalLength(combination);
 
     // Find a stock cut in the cutList that can accommodate the total length of the combination
     const suitableStockCut = cutList.find(stockCut => stockCut.stockLength - stockCut.usedLength >= totalLength);
@@ -138,10 +154,10 @@ export const fitPartInStock = (part: Cut, cutList: StockCut[]): boolean => {
 
     // Try to fit the part in the smallest stock length available
     for (let cut of cutList) {
-        // If the part length is less than or equal to the remaining length of the stock length, we can update the stock length's used length 
+        // If the part length is less than or equal to the remaining length of the stock length plus the kerf, we can update the stock length's used length 
         // and push the part to its cuts array. Then we can break out of the loop by setting fitted to true.
-        if (cut.stockLength - cut.usedLength >= part.length) {
-            cut.usedLength += part.length;
+        if (cut.stockLength - cut.usedLength >= part.length + globalVars.defaultKerf) {
+            cut.usedLength += part.length + globalVars.defaultKerf;
             cut.cuts.push({ length: part.length, quantity: 1 });
             fitted = true;
             break;
