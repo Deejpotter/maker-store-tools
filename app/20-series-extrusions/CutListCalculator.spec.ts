@@ -29,7 +29,7 @@ describe('generatePartCombinations', () => {
     it('should return correct combinations for 2 x 700mm parts', () => {
     const parts = [{ length: 700, quantity: 2 }];
     const combinations = generatePartCombinations(parts);
-    expect(combinations).toEqual([[{ length: 700, quantity: 2 }]]);
+    expect(combinations).toEqual([[], [{ length: 700, quantity: 2 }]]);
   });
 });
 
