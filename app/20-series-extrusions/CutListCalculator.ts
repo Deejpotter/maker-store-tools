@@ -1,4 +1,5 @@
-import {Cut, StockCut} from "./CutListTypes";
+import { Cut, StockCut } from "./CutListTypes";
+import { globalVars } from "./page";
 
 /**
  * Calculates the optimized cut list based on the provided array of parts and standard stock lengths.
@@ -34,8 +35,8 @@ export default calculateCutList;
  * @param {StockCut[]} cutList - The current list of stock cuts.
  */
 export const addCombinationToStock = (combination: Cut[], InputStockLength: number, cutList: StockCut[]): void => {
-    // Calculate the total length of the combination
-    const totalLength = combination.reduce((sum, cut) => sum + cut.length * cut.quantity, 0);
+    // Calculate the total length of the combination, accounting for the blade kerf
+    const totalLength = combination.reduce((sum, cut) => sum + cut.length * cut.quantity, 0) + globalVars.defaultKerf * (combination.length - 1);
 
     // Find a stock cut in the cutList that can accommodate the total length of the combination
     const suitableStockCut = cutList.find(stockCut => stockCut.stockLength - stockCut.usedLength >= totalLength);

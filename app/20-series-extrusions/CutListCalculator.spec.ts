@@ -1,4 +1,24 @@
-import { addCombinationToStock, generatePartCombinations } from './CutListCalculator';
+import calculateCutList, { addCombinationToStock, generatePartCombinations } from './CutListCalculator';
+
+// Test suite for the calculateCutList function
+describe('calculateCutList', () => {
+    // Test case: when asked for 2 x 700mm extrusions, the function should use a single 1500mm stock cut.
+    it('should fit two 700mm parts into a single 1500mm stock', () => {
+        // Set up the test data
+        const parts = [{ length: 700, quantity: 2 }];
+        const stockLengths = [1500]; 
+
+        // Call the function with the test data
+        const cutList = calculateCutList(parts, stockLengths);
+
+        // Check that the function returned the correct cut list
+        expect(cutList.length).toBe(1);
+        expect(cutList[0].usedLength).toBe(1408);
+        expect(cutList[0].cuts.length).toBe(1);
+        expect(cutList[0].cuts[0].length).toBe(700);
+        expect(cutList[0].cuts[0].quantity).toBe(2);
+    });
+});
 
 // Test suite for the generatePartCombinations function
 describe('generatePartCombinations', () => {
@@ -88,6 +108,20 @@ describe('addCombinationToStock', () => {
         expect(cutList.length).toBe(1);
         expect(cutList[0].usedLength).toBe(2);
         expect(cutList[0].cuts.length).toBe(1);
+    });
+
+    // Test case: When asked for 2 x 700mm extrusions, the function should add them to a single 1500mm stock cut.
+    it('should add two 700mm extrusions to a single 1500mm stock cut', () => {
+        const combination = [{ length: 700, quantity: 2 }];
+        const stockLength = 1500;
+        const cutList = [{ stockLength: 1500, usedLength: 0, cuts: [], quantity: 1 }];
+
+        addCombinationToStock(combination, stockLength, cutList);
+
+        expect(cutList[0].usedLength).toBe(1400);
+        expect(cutList[0].cuts.length).toBe(1);
+        expect(cutList[0].cuts[0].length).toBe(700);
+        expect(cutList[0].cuts[0].quantity).toBe(2);
     });
 });
 

@@ -3,17 +3,18 @@ import React, { useState } from "react";
 import { Cut, StockCut, GlobalVariables } from "./CutListTypes"
 import calculateCutList from "./CutListCalculator";
 
+export const globalVars:GlobalVariables = {
+    defaultKerf: 4,
+    defaultCutFee: 2,
+    defaultSetupFee: 3
+}
+    
 const CuttingCalculator = () => {
 	const [parts, setParts] = useState<Cut[]>([]);
 	const [cutList, setCutList] = useState<StockCut[]>([]);
 	const [color, setColor] = useState("S"); // Default color silver
 	const [profile, setProfile] = useState("20x20"); // Default profile
 
-	const globalVars:GlobalVariables = {
-		defaultKerf: 4,
-		defaultCutFee: 2,
-		defaultSetupFee: 3
-	}
 
 	// Standard stock lengths for 20 Series Extrusions
 	const standardStockLengths = [500, 1000, 1500, 3000];
