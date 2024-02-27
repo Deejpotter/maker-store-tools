@@ -1,4 +1,5 @@
 "use client";
+import LayoutContainer from "@/components/LayoutContainer";
 import React, { useState, useEffect } from "react";
 
 export default function EnclosureCalculator() {
@@ -54,43 +55,45 @@ export default function EnclosureCalculator() {
 	// Define calculateDoors function when ready
 
 	return (
-		<div>
-			<input
-				type="number"
-				name="length"
-				value={dimensions.length}
-				onChange={handleDimensionChange}
-				placeholder="Length (m)"
-			/>
-			<input
-				type="number"
-				name="width"
-				value={dimensions.width}
-				onChange={handleDimensionChange}
-				placeholder="Width (m)"
-			/>
-			<input
-				type="number"
-				name="height"
-				value={dimensions.height}
-				onChange={handleDimensionChange}
-				placeholder="Height (m)"
-			/>
+		<LayoutContainer>
+			<div>
+				<input
+					type="number"
+					name="length"
+					value={dimensions.length}
+					onChange={handleDimensionChange}
+					placeholder="Length (m)"
+				/>
+				<input
+					type="number"
+					name="width"
+					value={dimensions.width}
+					onChange={handleDimensionChange}
+					placeholder="Width (m)"
+				/>
+				<input
+					type="number"
+					name="height"
+					value={dimensions.height}
+					onChange={handleDimensionChange}
+					placeholder="Height (m)"
+				/>
 
-			{/* Door configuration options */}
-			{/* Implement checkboxes or dropdowns for doorConfig */}
+				{/* Door configuration options */}
+				{/* Implement checkboxes or dropdowns for doorConfig */}
 
-			<h3>Results:</h3>
-			<p>
-				Total 2040 Extrusions for Frames:{" "}
-				{results.extrusions?.frame2040.toFixed(2)} meters
-			</p>
-			<p>
-				Total 2020 Extrusions for Vertical Supports:{" "}
-				{results.extrusions?.vertical2020.toFixed(2)} meters
-			</p>
-			{/* Display additional results for doors if needed */}
-		</div>
+				<h3>Results:</h3>
+				<p>
+					Total 2040 Extrusions for Frames:{" "}
+					{results.extrusions?.frame2040.toFixed(2)} meters
+				</p>
+				<p>
+					Total 2020 Extrusions for Vertical Supports:{" "}
+					{results.extrusions?.vertical2020.toFixed(2)} meters
+				</p>
+				{/* Display additional results for doors if needed */}
+			</div>
+		</LayoutContainer>
 	);
 }
 interface Dimensions {

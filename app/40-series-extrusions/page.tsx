@@ -1,4 +1,5 @@
 "use client";
+import LayoutContainer from "@/components/LayoutContainer";
 import React, { useState, useEffect } from "react";
 
 interface Extrusion {
@@ -90,51 +91,53 @@ export default function ExtrusionPricingCalculator() {
 	};
 
 	return (
-		<div>
-			{extrusions.map((extrusion, index) => (
-				<div key={index}>
-					<input
-						type="number"
-						name="length"
-						value={extrusion.length}
-						onChange={(e) =>
-							handleInputChange(index, "length", parseFloat(e.target.value))
-						}
-						placeholder="Length (mm)"
-					/>
-					<input
-						type="number"
-						name="quantity"
-						value={extrusion.quantity}
-						onChange={(e) =>
-							handleInputChange(index, "quantity", parseInt(e.target.value, 10))
-						}
-						placeholder="Quantity"
-					/>
-					<select
-						name="type"
-						value={extrusion.type}
-						onChange={(e) => handleInputChange(index, "type", e.target.value)}
-					>
-						<option value="4040">40x40</option>
-						<option value="4080">40x80</option>
-					</select>
-					<select
-						name="tapping"
-						value={extrusion.tapping}
-						onChange={(e) =>
-							handleInputChange(index, "tapping", e.target.value)
-						}
-					>
-						<option value="nonTapped">Not Tapped</option>
-						<option value="tappedOneEnd">Tapped on One End</option>
-						<option value="tappedBothEnds">Tapped on Both Ends</option>
-					</select>
-				</div>
-			))}
-			<p>SKU: {sku}</p>
-			<p>Total Price without GST: ${totals.withoutGST.toFixed(2)}</p>
-			<p>Total Price with GST: ${totals.withGST.toFixed(2)}</p>
-		</div>
+		<LayoutContainer>
+			<div>
+				{extrusions.map((extrusion, index) => (
+					<div key={index}>
+						<input
+							type="number"
+							name="length"
+							value={extrusion.length}
+							onChange={(e) =>
+								handleInputChange(index, "length", parseFloat(e.target.value))
+							}
+							placeholder="Length (mm)"
+						/>
+						<input
+							type="number"
+							name="quantity"
+							value={extrusion.quantity}
+							onChange={(e) =>
+								handleInputChange(index, "quantity", parseInt(e.target.value, 10))
+							}
+							placeholder="Quantity"
+						/>
+						<select
+							name="type"
+							value={extrusion.type}
+							onChange={(e) => handleInputChange(index, "type", e.target.value)}
+						>
+							<option value="4040">40x40</option>
+							<option value="4080">40x80</option>
+						</select>
+						<select
+							name="tapping"
+							value={extrusion.tapping}
+							onChange={(e) =>
+								handleInputChange(index, "tapping", e.target.value)
+							}
+						>
+							<option value="nonTapped">Not Tapped</option>
+							<option value="tappedOneEnd">Tapped on One End</option>
+							<option value="tappedBothEnds">Tapped on Both Ends</option>
+						</select>
+					</div>
+				))}
+				<p>SKU: {sku}</p>
+				<p>Total Price without GST: ${totals.withoutGST.toFixed(2)}</p>
+				<p>Total Price with GST: ${totals.withGST.toFixed(2)}</p>
+			</div>
+		</LayoutContainer>
 	);
 }

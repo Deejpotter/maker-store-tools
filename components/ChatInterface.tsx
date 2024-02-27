@@ -18,13 +18,9 @@ import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
 import "@/styles/ChatInterface.scss";
 import FileUpload from "./FileUpload";
 
-// The chat interface component receives setShowConversations and showConversations as props
-export type ChatInterfaceProps = {
-	setShowConversations: Dispatch<SetStateAction<boolean>>;
-	showConversations: boolean;
-};
-
-// Define the ChatInterface component as a functional component
+/**
+ * Handles the chat interface for the chatbot.
+ */
 const ChatInterface: React.FC<ChatInterfaceProps> = ({
 	setShowConversations,
 	showConversations,
@@ -49,13 +45,13 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
 		innerText: string,
 		nodes: NodeList
 	) => {
-		// Use textContent or any other parameter based on your requirement
 		if (!textContent.trim()) return; // Don't send empty messages
 		setMessages((prev) => [
 			...prev,
 			{ type: "user", content: `You: ${textContent}` },
 		]);
 
+		// Try the request to the bot API using the user's message.
 		try {
 			const response = await fetch(`${apiUrl}/ask`, {
 				method: "POST",
@@ -63,6 +59,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
 				body: JSON.stringify({ user_message: textContent }),
 			});
 
+			// If the request is successful, add the bot's response to the chat.
 			if (response.ok) {
 				const data = await response.json();
 				setMessages((prev) => [
@@ -141,3 +138,9 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
 
 // Set default export for this component to make it easier to import into other files
 export default ChatInterface;
+
+// The chat interface component receives setShowConversations and showConversations as props
+export type ChatInterfaceProps = {
+	setShowConversations: Dispatch<SetStateAction<boolean>>;
+	showConversations: boolean;
+};
