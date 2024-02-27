@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import ShippingItem from "@/interfaces/ShippingItem";
 import ItemAddForm from "@/components/ItemAddForm";
 import ItemSelectAndCalculate from "@/components/ItemSelectAndCalculate";
+import LayoutContainer from "@/components/LayoutContainer";
 
 // Helper function to calculate the volume
 const calculateVolume = ({
@@ -30,14 +31,16 @@ const BoxShippingCalculatorPage: React.FC = () => {
   };
 
   return (
-    <div>
-      <h1>Box Shipping Calculator</h1>
-      <ItemSelectAndCalculate
-        items={items}
-        onCalculateBox={handleCalculateBox}
-      />
-      <ItemAddForm onAddItem={handleAddItem} />
-    </div>
+    <LayoutContainer>
+      <div>
+        <h1>Box Shipping Calculator</h1>
+        <ItemSelectAndCalculate
+          items={items}
+          onCalculateBox={handleCalculateBox}
+        />
+        <ItemAddForm onAddItem={handleAddItem} />
+      </div>
+    </LayoutContainer>
   );
 };
 
